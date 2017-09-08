@@ -138,10 +138,8 @@ unsetopt share_history
 export TERM=xterm-256color
 
 # golang
-export GOBIN=/usr/local/Homebrew/bin/go
 export GOPATH=/Users/linfeng/Work/Golang
-export GOROOT=/usr/local/Homebrew/Cellar/go/1.8.3
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+export GOROOT=/usr/local/Cellar/go/1.8.3
 
 # rust
 export PATH=/Users/linfeng/.cargo/bin:$PATH
