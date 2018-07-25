@@ -503,7 +503,7 @@ Plugin 'phildawes/racer'
 " go
 "Bundle 'cespare/vim-golang'
 "Bundle 'Blackrush/vim-gocode'
-Bundle 'fatih/vim-go', {'for': 'go'}
+Bundle 'fatih/vim-go'
 
 " html
 Bundle 'alvan/vim-closetag'
@@ -580,6 +580,33 @@ let g:tagbar_expand=1
 let g:tagbar_foldlevel=2
 let g:tagbar_autoshowtag=1
 let g:tagbar_width=25
+let g:tagbar_type_go = {
+    \ 'ctagstype' : 'go',
+    \ 'kinds'     : [
+        \ 'p:package',
+        \ 'i:imports:1',
+        \ 'c:constants',
+        \ 'v:variables',
+        \ 't:types',
+        \ 'n:interfaces',
+        \ 'w:fields',
+        \ 'e:embedded',
+        \ 'm:methods',
+        \ 'r:constructor',
+        \ 'f:functions'
+    \ ],
+    \ 'sro' : '.',
+    \ 'kind2scope' : {
+        \ 't' : 'ctype',
+        \ 'n' : 'ntype'
+    \ },
+    \ 'scope2kind' : {
+        \ 'ctype' : 't',
+        \ 'ntype' : 'n'
+    \ },
+    \ 'ctagsbin'  : 'gotags',
+    \ 'ctagsargs' : '-sort -silent'
+\ }
 "}}}
 
 "NERD_commenter  注释插件{{{
@@ -909,7 +936,7 @@ let g:multi_cursor_quit_key='<Esc>'
 
 " AutoCloseTag {{{
 " Make it so AutoCloseTag works for xml and xhtml files as well
-let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.xml, *.vue"
+let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.xml, *.vue, *.rs, *.go"
 " nmap <Leader>ac <Plug>ToggleAutoCloseMappings
 " }}}
 
@@ -920,17 +947,18 @@ endif
 "}}}
 
 
-" Others {{{
+" EasyGrep {{{
 let g:EasyGrepCommand = 1
 let g:EasyGrepFilesToExclude=".pyc,tags,node_modules,.svn,.git"
-" fzf
-set rtp+=/usr/local/opt/fzf "brew install fzf
+"}}}
 
+" fzf {{{
 
-" If installed using Homebrew
+"{{{ If installed using Homebrew
 set rtp+=/usr/local/opt/fzf
+"}}}
 
-" auto close
+"{{{ auto close
 let delimitMate_matchpairs = "(:),[:],{:}"
 let delimitMate_nesting_quotes = ['"','`']
 let delimitMate_quotes = "\" ` "

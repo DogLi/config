@@ -91,7 +91,8 @@ export EDITOR='vim'
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias cda="cd $HOME/Desktop/qdata-mgr/src"
+alias cda="cd $HOME/Work/Golang"
+alias cdb="cd $HOME/Work/Video"
 alias cd1="cd $HOME/Desktop/cloud && gitstash.py release-5.0.1"
 alias cd2="cd $HOME/Desktop/cloud && gitstash.py release-5.0.0"
 
@@ -138,18 +139,18 @@ unsetopt share_history
 export TERM=xterm-256color
 
 # golang
-export GOPATH=/Users/linfeng/Work/Golang
-export GOROOT=/usr/local/Cellar/go/1.8.3
+export GOROOT=/usr/local/Cellar/go/1.9.2/libexec
 
 # rust
-export PATH=/Users/linfeng/.cargo/bin:$PATH
+export PATH=/Users/yuanlinfeng/.cargo/bin:$PATH
 
 # oracle
-export ORACLE_HOME=/Users/linfeng/oracle/instantclient_11_2
+export ORACLE_HOME=/Users/yuanlinfeng/oracle/instantclient_11_2
 export DYLD_LIBRARY_PATH=$ORACLE_HOME
 export LD_LIBRARY_PATH=$ORACLE_HOME
 
 alias code="/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code"
+alias flashDNS="sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder;"
 
 #java
 export JAVA_HOME=$(/usr/libexec/java_home)
@@ -173,6 +174,12 @@ alias start_windows="$VMRUN -T fusion start $VM_windows"
 alias stop_windows="$VMRUN stop $VM_windows nogui"
 alias start_centos="$VMRUN -T fusion start $VM_centos nogui"
 alias stop_centos="$VMRUN stop $VM_centos"
+alias ls="exa"
+alias ll="exa -lh --git"
+alias lt="exa -T -L 2"
+alias cda="cd ~/Work/Monero/SparkMonero/"
+alias cdb="cd ~/Work/Spark"
+alias python="python3"
 
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="/Library/TeX/Root/bin/x86_64-darwin:$PATH"
@@ -184,3 +191,9 @@ alias start_notebook="source /Applications/anaconda3/bin/activate && jupyter not
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Setting PATH for Python 2.7
+# The orginal version is saved in .zprofile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/2.7/bin:${PATH}"
+export PATH
+
