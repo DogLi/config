@@ -49,6 +49,7 @@ set ambiwidth=double                          "默认用窄字符,防止无法�
 set lbr                                       "不在单词中间段行
 set selectmode=mouse,key                      "可以用鼠标和键盘进入选择模式
 set iskeyword+=_,-                    "带有上述符号的单词不能被换行分割
+set iskeyword-=.
 let g:vimim_disable_chinese_punctuation=1     "关闭中文标点
 let g:vimim_disable_seamless_english_input=1  "中英文之间不加标点
 set formatoptions+=mB                         "使中文也能自动换行
