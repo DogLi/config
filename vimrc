@@ -8,13 +8,6 @@
 "                    History:
 "=============================================================================
 
-"os detect
-if(has('win32') || has('win64') || has('win32unix'))
-    let g:isWin=1
-else
-    let g:isWin=0
-endif
-
 "乱码问题{{{1
 "--------------------------------------------------------------------------------------
 set encoding=utf-8
@@ -40,7 +33,6 @@ set linespace=2                               "行间距
 set scrolloff=5                               "向上下滚动时,至少显示5行
 set scrolljump=5                              "光标离开屏幕范围
 set number                                    "显示行号
-"set textwidth=100                             "设置文本宽度为80,对于已经存在的文本,选中后按gq就可以了
 set nowrap                                      "设置自动折行
 set showcmd                                   "显示命令
 "set cursorcolumn
@@ -56,13 +48,13 @@ set formatoptions+=mB                         "使中文也能自动换行
 set helplang=cn
 " When editing a file, always jump to the last known cursor position.
 autocmd BufReadPost *
-            \ if line("'\"") > 0 && line("'\"") <= line("$") |
-            \   exe "normal! g`\"" |
-            \ endif
+           \ if line("'\"") > 0 && line("'\"") <= line("$") |
+           \   exe "normal! g`\"" |
+           \ endif
 if has("gui_running")
-    set guioptions+=b  "隐藏底部滚动条
-    set guioptions+=e  "打开gui标签页支持
-    set showtabline=2  "指定合适显示标签页行，0永远不显示，1至少有两个标签，2永远显示
+   set guioptions+=b  "隐藏底部滚动条
+   set guioptions+=e  "打开gui标签页支持
+   set showtabline=2  "指定合适显示标签页行，0永远不显示，1至少有两个标签，2永远显示
 endif
 set listchars=tab:\ \ ,trail:.,extends:>,precedes:<             " 制表符显示方式定义：trail为拖尾空白显示字符，extends和precedes分别是wrap关闭时，所在行在屏幕右边和左边显示的指示字符
 " Syntax coloring lines that are too long just slows down the world
@@ -75,11 +67,11 @@ set hidden " 切换文件不保存，隐藏
 
 "调整光标
 if exists('$TMUX')
-    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+   let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+   let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
 else
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+   let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+   let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 
 "--------------------------------------------------------------------------------------
@@ -87,7 +79,7 @@ endif
 "--------------------------------------------------------------------------------------
 set lazyredraw
 autocmd! bufwritepost .vimrc source % " vimrc文件修改之后自动加载。 linux。
-"set autochdir "Automatically cd into the directory
+set autochdir "Automatically cd into the directory
 set formatoptions=tcrqn "自动格式化
 set mouse=a                         "使用鼠标=a
 set ttymouse=xterm2
@@ -112,6 +104,9 @@ set selectmode=mouse,key
 
 
 " 备份,到另一个位置. 防止误删
+set undolevels=1000
+set undofile
+set undoreload=1000
 set directory=~/.vim/dirs/tmp     " directory to place swap files in
 set backup                        " make backup files
 set backupdir=~/.vim/dirs/backups " where to put backup files
@@ -120,56 +115,43 @@ set undodir=~/.vim/dirs/undos
 set viminfo+=n~/.vim/dirs/viminfo
 " create needed directories if they don't exist
 if !isdirectory(&backupdir)
-    call mkdir(&backupdir, "p")
+   call mkdir(&backupdir, "p")
 endif
 if !isdirectory(&directory)
-    call mkdir(&directory, "p")
+   call mkdir(&directory, "p")
 endif
 if !isdirectory(&undodir)
-    call mkdir(&undodir, "p")
+   call mkdir(&undodir, "p")
 endif
 
-set undolevels=1000
-if v:version > 730
-    set undofile
-    set undoreload=1000
-    if g:isWin
-        set undodir=$VIM/bak/vimundo/
-    else
-        set undodir=~/.vim/vimundo/
-    endif
-endif
 
 " 文件保存时处理首尾空格，^M字符
 let g:keep_trailing_whitespace = 1
 function! StripTrailingWhitespace()
-    %s/\s\+$//e
-    %s/\r\+$//e
+   %s/\s\+$//e
+   %s/\r\+$//e
 endfunction
 "autocmd FileType html,c,cpp,java,go,php,javascript,python,twig,xml,yml autocmd BufWritePre <buffer> if exists('g:keep_trailing_whitespace') | silent! :StripTrailingWhitespace | endif
 autocmd BufWritePre * call StripTrailingWhitespace()
 
-" for tmux to automatically set paste and nopaste mode at the time pasting (as
-" happens in VIM UI)
+" for tmux to automatically set paste and nopaste mode at the time pasting (as happens in VIM UI)
 
 function! WrapForTmux(s)
-    if !exists('$TMUX')
-        return a:s
-    endif
-
-    let tmux_start = "\<Esc>Ptmux;"
-    let tmux_end = "\<Esc>\\"
-
-    return tmux_start . substitute(a:s, "\<Esc>", "\<Esc>\<Esc>", 'g') . tmux_end
+   if !exists('$TMUX')
+       return a:s
+   endif
+   let tmux_start = "\<Esc>Ptmux;"
+   let tmux_end = "\<Esc>\\"
+   return tmux_start . substitute(a:s, "\<Esc>", "\<Esc>\<Esc>", 'g') . tmux_end
 endfunction
 
 let &t_SI .= WrapForTmux("\<Esc>[?2004h")
 let &t_EI .= WrapForTmux("\<Esc>[?2004l")
 
 function! XTermPasteBegin()
-    set pastetoggle=<Esc>[201~
-    set paste
-    return ""
+   set pastetoggle=<Esc>[201~
+   set paste
+   return ""
 endfunction
 
 inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
@@ -250,20 +232,6 @@ let g:Powerline_symbols = 'fancy'
 set laststatus=2
 set t_Co=256 "颜色设置
 
-
-"================错误提示错误提示错误提示======================{{{2
-"合法IP地址显示
-match todo /\(\(25[0-5]\|2[0-4][0-9]\|[01]\?[0-9] [0-9]\?\)\.\) \{3\}\(25[0-5]\|2[0-4][0-9]\|[01]\?  [0-9][0-9]\?\)/
-"非法IP地址显示红色
-match errorMsg /\(2[5][6-9]\|2[6-9][0-9]\|[3-9][0-9][0-9]\)[.]\[0-9]\{1,3\}[.][0-9]\{1,3\}[.][0-9]\{1,3\}\|\[0-9]\{1,3\}[.]\(2[5][6-9]\|2[6-9][0-9]\|\
-            \\ \[3-9][0-9][0-9]\)[.][0-9]\{1,3\}[.][0-9]
-            \\{1,3\}\|\[0-9]\{1,3\}[.][0-9]\{1,3\}[.]\(2[5]
-            \\ \[6-9]\|\2[6-9][0-9]|[3-9][0-9][0-9]\)[.][0-9]\{1,3\}
-            \\|[0-9]\{1,3\}[.][0-9]\{1,3\}[.][0-9]\{1,3\}[.]
-            \\(2[5][6-9]\|2[6-9][0-9]\|\[3-9][0-9][0-9]\)/
-
-
-
 "--------------------------------------------------------------------------------------
 "查看XXX映射文件：verbose map XXX
 "Map{{{1
@@ -292,13 +260,13 @@ nnoremap <leader>ev <C-w><C-v><C-l>:e $MYVIMRC<cr>
 
 map <Leader>ch :call SetColorColumn()<CR>
 function! SetColorColumn()
-    let col_num = virtcol(".")
-    let cc_list = split(&cc, ',')
-    if count(cc_list, string(col_num)) <= 0
-        execute "set cc+=".col_num
-    else
-        execute "set cc-=".col_num
-    endif
+   let col_num = virtcol(".")
+   let cc_list = split(&cc, ',')
+   if count(cc_list, string(col_num)) <= 0
+      execute "set cc+=".col_num
+   else
+      execute "set cc-=".col_num
+   endif
 endfunction
 map "" maviwS"`a
 "map '' maviwS'`a
@@ -350,42 +318,6 @@ imap  ;;   <Left>
 "map <C-b>           <home>
 "map <C-e>           <end>
 
-"function! CompileRun()
-"exec "w"
-"if(&filetype=='java')
-"exec "!javac %"
-"exec "!java ./%<"
-"elseif(&filetype=='sh')
-"exec "!chmod a+x %"
-"exec "!./%"
-"elseif(&filetype=='python')
-"exec "!python %"
-"elseif
-"echo "error:The filetype is not included!"
-"endif
-"endfunc
-
-"function DoOneFileMake()
-"if(expand("%:p:h")!=getcwd())
-"echohl WarningMsg | echo "Fail to make! This file is not in the current dir! Press redirect to the dir of this file."
-"endif
-"exec "w"
-"call SetCompilation()
-"exec "make"
-"exec "copen"
-"endfunction
-
-"function SetCompilation()
-"if &filetype=='c'
-"set makeprg=gcc\ %\ -o\ %<
-"elseif &filetype=='cpp'
-"set makeprg=g++\ %\ -o\ %<
-"endif
-"endfunction
-
-"map <C-F5> :call CompileRun()<cr>
-""ctrl+F6一键make C/C++程序
-"nmap <C-F6> :call DoOneFileMake()<CR><CR>
 "============设置<Fn>快捷键==============={{{2
 nnoremap <F5> :NERDTreeToggle<CR>
 nnoremap <silent><F6> :TagbarToggle<CR>
@@ -395,16 +327,6 @@ nnoremap <f7> :UndotreeToggle<cr>
 nmap <F9> :SCCompile<cr>
 nnoremap <f3> :lnext<cr>
 nnoremap <f4> :lprevious<cr>
-"============gvim使用ctr+F1显示/取消工具栏===============
-set guioptions-=m
-set guioptions-=T
-map <silent> <C-F1> :if &guioptions =~# 'T' <Bar>
-            \set guioptions-=T <Bar>
-            \set guioptions-=m <Bar>
-            \else <Bar>
-            \set guioptions+=T <Bar>
-            \set guioptions+=m <Bar>
-            \endif<CR>
 
 
 "============== 按ctrl+F3把所有buffer变成tab显示出来=========
@@ -414,11 +336,6 @@ nnoremap <silent> <C-F3> :let notabs=!notabs<Bar>:if notabs<Bar>:tabo<Bar>:else<
 
 
 
-
-"}}}
-"}}}
-
-
 "--------------------------------------------------------------------------------------
 "Vundle 插件管理软件{{{
 "插件相关{{{1
@@ -426,11 +343,12 @@ nnoremap <silent> <C-F3> :let notabs=!notabs<Bar>:if notabs<Bar>:tabo<Bar>:else<
 let iCanHazVundle=1
 let vundle_readme=expand('~/.vim/bundle/vundle/README.md')
 if !filereadable(vundle_readme)
-    echo "Installing Vundle..."
-    echo ""
-    silent !mkdir -p ~/.vim/bundle
-    silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
-    let iCanHazVundle=0
+   echo "Installing Vundle..."
+   echo ""
+   silent !mkdir -p ~/.vim/bundle
+   silent !mkdir -p ~/.vim/yank
+   silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
+   let iCanHazVundle=0
 endif
 
 filetype off
@@ -438,8 +356,8 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 "}}}
-"
-"
+
+
 " editor
 Bundle 'ervandew/supertab'
 Bundle 'mbbill/fencview'
@@ -448,10 +366,8 @@ Bundle 'majutsushi/tagbar'
 Bundle 'Lokaltog/vim-easymotion'
 Bundle 'kien/ctrlp.vim'
 Bundle 'junegunn/fzf'
-"Bundle 'jmcantrell/vim-virtualenv'
 Bundle 'tpope/vim-repeat'
 Bundle 'scrooloose/nerdcommenter'
-Bundle 'terryma/vim-expand-region'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'Xuyuanp/git-nerdtree'
 Bundle 'spiiph/vim-space'
@@ -460,71 +376,29 @@ Bundle 'godlygeek/tabular'
 Bundle 'vim-scripts/L9'
 "Bundle 'vim-scripts/YankRing.vim'
 Bundle 'dkprice/vim-easygrep'
-Bundle 'mileszs/ack.vim'
-Bundle 'mbbill/undotree'
 
 "output & colorscheme
 Bundle 'vim-scripts/Mark--Karkat'
-Bundle 'Yggdroot/indentLine'
-Plugin 'kien/tabman.vim' " Tab list panel
+"Bundle 'Yggdroot/indentLine'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'fisadev/fisa-vim-colorscheme'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'crusoexia/vim-monokai'
 Plugin 'tpope/vim-fugitive' "git wrapper
-Plugin 'h1mesuke/unite-outline' "Provide your Vim's buffer with the outline view
 
 " General Programming
 Bundle 'w0rp/ale'
-Bundle 'ihacklog/AuthorInfo'
 Bundle 'Chiel92/vim-autoformat'
-"Bundle 'jiangmiao/auto-pairs'
+Bundle 'jiangmiao/auto-pairs'
 Plugin 'junegunn/vim-easy-align' "对齐
 Plugin 'terryma/vim-multiple-cursors' "多word编辑
 Plugin 'Raimondi/delimitMate' "Provides automatic closing of quotes, parenthesis, brackets, etc.
-" Bundle 'xuhdev/singleCompile'
-
-
-" Snippets && AutoComplete
-Bundle 'Valloric/YouCompleteMe'
-Bundle 'SirVer/ultisnips'
-Bundle 'honza/vim-snippets'
-Bundle 'djoshea/vim-autoread'
 
 "Python
-"Bundle 'python-mode/python-mode'
+Bundle 'python-mode/python-mode'
 Bundle 'yssource/python.vim'
-Bundle 'python_match.vim'
-Bundle 'pythoncomplete'
-
 " rust
 Bundle 'rust-lang/rust.vim'
-Plugin 'phildawes/racer'
-
-" go
-"Bundle 'cespare/vim-golang'
-"Bundle 'Blackrush/vim-gocode'
-Bundle 'fatih/vim-go'
-
-" html
-Bundle 'alvan/vim-closetag'
-Bundle 'hail2u/vim-css3-syntax'
-Bundle 'gorodinskiy/vim-coloresque'
-Bundle 'tpope/vim-haml'
-Bundle 'wavded/vim-stylus'
-Bundle 'posva/vim-vue'
-Bundle 'mattn/emmet-vim'
-
-" javascript
-"Bundle 'ternjs/tern_for_vim'
-" Paint css colors with the real color
-Bundle 'lilydjwg/colorizer'
-" XML/HTML tags navigation
-Bundle 'matchit.zip'
-Bundle 'mxw/vim-jsx'
-Bundle 'justinj/vim-react-snippets'
-
-Bundle 'rhysd/conflict-marker.vim'
 Bundle 'luochen1990/rainbow'
 
 
@@ -627,14 +501,6 @@ let g:tagbar_type_go = {
 "let g:loaded_matchit=1
 "}}}
 
-"authorinfo.vim      自动添加作者信息{{{
-"（需要和NERD_commenter联用)使用,:AuthorInfoDetect呼出
-"version 1.5        2011-08-18
-let g:vimrc_author='linfeng.yuan'
-let g:vimrc_email='linfeng.yuan@woqutech.com'
-let g:vimrc_homepage='www.woqutech.com'
-"}}}
-
 "fencview   自动检测文件编码 {{{
 "Tools->Encoding->Auto Detect" or use this command: :FencAutoDetect
 "}}}
@@ -682,7 +548,7 @@ inoremap <expr> <CR> BreakLine() ? "<CR><ESC>O" : "<CR>"
 
 "Yankring {{{
 " store yankring history file there too
-"let g:yankring_history_dir = '~/.vim/dirs/'
+"let g:yankring_history_dir = '~/.vim/yank/'
 "}}}
 
 " 具体语言语法高亮 {{{
@@ -691,19 +557,6 @@ inoremap <expr> <CR> BreakLine() ? "<CR><ESC>O" : "<CR>"
 Bundle 'hdima/python-syntax'
 let python_highlight_all = 1
 
-" for golang
-Bundle 'jnwhiteh/vim-golang'
-
-"for jinja2 highlight
-Bundle 'Glench/Vim-Jinja2-Syntax'
-
-"for nginx conf file highlight.   need to confirm it works
-"Bundle 'thiderman/nginx-vim-syntax'
-
-" for markdown
-Plugin 'plasticboy/vim-markdown'
-" let g:vim_markdown_folding_disabled=1
-"}}}
 
 ""ale语法检查{{{
 "set statusline+=%{LEGetStatusLine()}
@@ -732,76 +585,11 @@ let g:ale_set_quickfix = 0
 
 "}}}
 
-"YouCompleteMe 代码补全插件{{{
-let g:ycm_collect_identifiers_from_tags_files = 1
-let g:ycm_seed_identifiers_with_syntax = 0
-let g:ycm_confirm_extra_conf = 0
-let g:ycm_error_symbol = '✗'
-let g:ycm_warning_symbol = '>!'
-"let g:ycm_filetype_specific_completion_to_disable = {'python':1, 'txt':1}
-let g:ycm_filetype_blacklist = {
-            \ 'tagbar' : 1,
-            \ 'qf' : 1,
-            \ 'notes' : 1,
-            \ 'markdown' : 1,
-            \ 'unite' : 1,
-            \ 'text' : 1,
-            \ 'vimwiki' : 1,
-            \ 'pandoc' : 1,
-            \ 'mail' : 1
-            \}
-let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
-nnoremap <leader>gc :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
-nnoremap <leader>gg :YcmCompleter GoToDefinitionElseDeclaration<CR>
-let g:acp_enableAtStartup = 0
 
-" enable completion from tags
-let g:ycm_collect_identifiers_from_tags_files = 1
-" rust
-let g:ycm_rust_src_path="/usr/local/src/rust/src"
-let $RUST_SRC_PATH="/usr/local/src/rust/src"
-let g:racer_cmd= "/usr/local/bin/racer"
-
-" remap Ultisnips for compatibility for YCM
-let g:UltiSnipsExpandTrigger = '<C-j>'
-let g:UltiSnipsJumpForwardTrigger = '<C-j>'
-let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
-
-" Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
-autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
-
-" Haskell post write lint and check with ghcmod
-" $ `cabal install ghcmod` if missing and ensure
-" ~/.cabal/bin is in your $PATH.
-if !executable("ghcmod")
-    autocmd BufWritePost *.hs GhcModCheckAndLintAsync
-endif
-
-" For snippet_complete marker.
-if !exists("g:evervim_no_conceal")
-    if has('conceal')
-        set conceallevel=2 concealcursor=i
-    endif
-endif
-
-" Disable the neosnippet preview candidate window
-" When enabled, there can be too much visual noise
-" especially when splits are used.
-set completeopt-=preview
-" ctrl+o : jump back
-" ctrl+i : jump forward
-"}}}
 
 " author info{{{
 function HeaderPython()
-    call setline(1, "#!/usr/bin/env python")
+    call setline(1, "#!/usr/bin/env python3")
     call append(1, "# -*- coding: utf-8 -*-")
     normal G
     normal o
@@ -860,31 +648,6 @@ let g:tabman_toggle = 'tl'
 let g:tabman_focus  = 'tf'
 "}}}
 
-"go lang ----------------------------------{{{
-let g:go_fmt_command = "goimports"
-let g:go_snippet_engine = "neosnippet"
-au FileType go nmap <leader>r <Bundle>(go-run)
-au FileType go nmap <leader>b <Bundle>(go-build)
-au FileType go nmap <leader>t <Bundle>(go-test)
-au FileType go nmap <leader>c <Bundle>(go-coverage)
-au FileType go nmap <Leader>ds <Bundle>(go-def-split)
-au FileType go nmap <Leader>dv <Bundle>(go-def-vertical)
-au FileType go nmap <Leader>dt <Bundle>(go-def-tab)
-au FileType go nmap <Leader>gd <Bundle>(go-doc)
-au FileType go nmap <Leader>gv <Bundle>(go-doc-vertical)
-au FileType go nmap <Leader>gb <Bundle>(go-doc-browser)
-"Show a list of interfaces which is implemented by the type under your cursor with <leader>s
-au FileType go nmap <Leader>s <Bundle>(go-implements)
-au FileType go nmap <Leader>i <Bundle>(go-info)
-au FileType go nmap <Leader>e <Bundle>(go-rename)
-"By default when :GoInstallBinaries is called, the binaries are installed to $GOBIN or $GOPATH/bin.  To change it
-"let g:go_bin_path = expand("~/.gotools")
-"let g:go_bin_path = "/usr/local/go/bin"  "or give absolute path
-"}}}
-
-"js ----------------------------------{{{
-let g:jsx_ext_required = 0
-"}}}
 
 " Tabularize {{{
 if isdirectory(expand("~/.vim/bundle/tabular"))
@@ -915,8 +678,9 @@ let g:rehash256 = 1
 let g:monokai_italic = 1
 let g:monokai_thick_border = 1
 colorscheme monokai
+"colorscheme solarized
 let g:solarized_termcolors=256
-set background=dark
+
 if exists('$TMUX')
     set term=screen-256color
 endif
@@ -928,18 +692,20 @@ command EP execute "!~/bin/pylint_switch.py enable"
 " }}}
 
 " Vim-Multi-Cursors {{{
+
 let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_next_key='<C-n>'
-let g:multi_cursor_prev_key='<C-p>'
-let g:multi_cursor_skip_key='<C-x>'
-let g:multi_cursor_quit_key='<Esc>'
+
+" Default mapping
+let g:multi_cursor_start_word_key      = '<C-n>'
+let g:multi_cursor_select_all_word_key = '<A-n>'
+let g:multi_cursor_start_key           = 'g<C-n>'
+let g:multi_cursor_select_all_key      = 'g<A-n>'
+let g:multi_cursor_next_key            = '<C-n>'
+let g:multi_cursor_prev_key            = '<C-p>'
+let g:multi_cursor_skip_key            = '<C-x>'
+let g:multi_cursor_quit_key            = '<Esc>'
 " }}}
 
-" AutoCloseTag {{{
-" Make it so AutoCloseTag works for xml and xhtml files as well
-let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.xml, *.vue, *.rs, *.go"
-" nmap <Leader>ac <Plug>ToggleAutoCloseMappings
-" }}}
 
 " Rainbow {{{
 if isdirectory(expand("~/.vim/bundle/rainbow/"))
@@ -953,7 +719,6 @@ let g:EasyGrepCommand = 1
 let g:EasyGrepFilesToExclude=".pyc,tags,node_modules,.svn,.git"
 "}}}
 
-" fzf {{{
 
 "{{{ If installed using Homebrew
 set rtp+=/usr/local/opt/fzf
@@ -964,6 +729,6 @@ let delimitMate_matchpairs = "(:),[:],{:}"
 let delimitMate_nesting_quotes = ['"','`']
 let delimitMate_quotes = "\" ` "
 imap  <C-g> <Plug>delimitMateJumpMany
-
 "}}}
+
 "   vim:foldmethod=marker foldlevel=1 textwidth=100
