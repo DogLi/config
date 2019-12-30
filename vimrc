@@ -18,7 +18,6 @@ source $VIMRUNTIME/delmenu.vim "解决encoding后出现的菜单乱码
 source $VIMRUNTIME/menu.vim "再次读取缺省菜单
 language messages zh_CN.utf-8 "解决console和界面的乱码
 
-
 "--------------------------------------------------------------------------------------
 "显示相关{{{1
 "--------------------------------------------------------------------------------------
@@ -245,6 +244,7 @@ map <Right> :tabn<cr>
 "nnoremap <right> gt    "到下一个tabe页
 map <Up> :CtrlP<cr>
 map <Down> :CtrlPBuffer<cr>
+
 nnoremap wv <C-w>v     "垂直分割当前窗口
 nnoremap wc <C-w>c     "关闭当前窗口
 nnoremap ws <C-w>s     "水平分割当前窗口
@@ -387,6 +387,7 @@ Plugin 'crusoexia/vim-monokai'
 Plugin 'tpope/vim-fugitive' "git wrapper
 
 " General Programming
+Bundle 'neoclide/coc.nvim', {'branch': 'release'}
 Bundle 'w0rp/ale'
 Bundle 'Chiel92/vim-autoformat'
 Bundle 'jiangmiao/auto-pairs'
@@ -394,9 +395,6 @@ Plugin 'junegunn/vim-easy-align' "对齐
 Plugin 'terryma/vim-multiple-cursors' "多word编辑
 Plugin 'Raimondi/delimitMate' "Provides automatic closing of quotes, parenthesis, brackets, etc.
 
-"Python
-Bundle 'python-mode/python-mode'
-Bundle 'yssource/python.vim'
 " rust
 Bundle 'rust-lang/rust.vim'
 Bundle 'luochen1990/rainbow'
@@ -731,4 +729,33 @@ let delimitMate_quotes = "\" ` "
 imap  <C-g> <Plug>delimitMateJumpMany
 "}}}
 
+"{{{ easy motion
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+
+" Jump to anywhere you want with minimal keystrokes, with just one key binding.
+" `s{char}{label}`
+nmap s <Plug>(easymotion-overwin-f)
+" or
+" `s{char}{char}{label}`
+" Need one more keystroke, but on average, it may be more comfortable.
+nmap s <Plug>(easymotion-overwin-f2)
+
+" Turn on case-insensitive feature
+let g:EasyMotion_smartcase = 1
+
+" JK motions: Line motions
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+"}}}
+
+"{{{
+set wildignore+=*/tmp/*,*/target/*,*.so,*.swp,*.zip     " MacOSX/Linux
+
+let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+"}}}
 "   vim:foldmethod=marker foldlevel=1 textwidth=100
